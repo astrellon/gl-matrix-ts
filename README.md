@@ -1,6 +1,7 @@
 # gl-matrix-ts
 typescript gl-matrix modify from https://github.com/toji/gl-matrix 3.4.1 for webgl engine
-
+该gl-matrix-ts 修改自gl-matrix 在原来的基础上没有做更大的更改,主要用来适应webgl引擎使用,感谢gl-matrix
+项目由chengse66修改,并将在后续产品里申明gl-matrix的版权声明。
 
 glMatrix
 =======================
