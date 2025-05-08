@@ -1,343 +1,431 @@
-import mat4 from "./mat4";
-import quat from "./quat";
+export interface vec4
+{
+    x: number;
+    y: number;
+    z: number;
+    w: number;
+}
+
+export type rvec4 = Readonly<vec4>;
 
 /**
- * 4 Dimensional Vector
- * @module vec4
+ * Clones this vector
+ *
+ * @param v the vector to clone
+ * @returns a new vector
  */
-export default class vec4 {
-  data: Float32Array;
-  /**
-   * Creates a new, empty vec4
-   *
-   * @returns {vec4} a new 4D vector
-   */
-  constructor(x: number = 0, y: number = 0, z: number = 0, w: number = 0) {
-    this.data = new Float32Array([x, y, z, w]);
-  }
+export function vec4Clone(v: rvec4): vec4
+{
+    return {x: v.x, y: v.y, z: v.z, w: v.w};
+}
 
+/**
+ * Copy the values from one vec4 to another
+ * @param v the target vector
+ * @param a the copy vector
+ * @returns the target vector
+ */
+export function vec4Copy(v: vec4, a: rvec4)
+{
+    v.x = a.x;
+    v.y = a.y;
+    v.z = a.z;
+    v.w = a.w;
+    return v;
+}
 
-  get x() {
-    return this.data[0];
-  }
+/**
+ * Set the components of a vec4 to the given values
+ *
+ * @param v the target vector
+ * @param x X component
+ * @param y Y component
+ * @param z Z component
+ * @param w W component
+ * @returns the target vector
+ */
+export function vec4Set(v: vec4, x: number, y: number, z: number, w: number)
+{
+    v.x = x;
+    v.y = y;
+    v.z = z;
+    v.w = w;
+    return v;
+}
 
-  set x(value: number) {
-    this.data[0] = value;
-  }
+/**
+ * Calculates the length vector v
+ *
+ * @params the source vector
+ * @returns length of v
+ */
+export function vec4Length(v: rvec4)
+{
+    return Math.sqrt(v.x ** 2 + v.y ** 2 + v.z ** 2 + v.w ** 2);
+}
 
-  get y() {
-    return this.data[1];
-  }
+/**
+ * Calculates the squared length of a vec4
+ *
+ * @returns squared length of v
+ */
+export function vec4SquaredLength(v: rvec4)
+{
+    return v.x ** 2 + v.y ** 2 + v.z ** 2 + v.w ** 2;
+}
 
-  set y(value: number) {
-    this.data[1] = value;
-  }
+/**
+ * Adds vector other into vec
+ * @param left the left vector
+ * @param right the right vector
+ * @returns the target vector
+ */
+export function vec4AddTo(left: vec4, right: rvec4)
+{
+    left.x += right.x;
+    left.y += right.y;
+    left.z += right.z;
+    left.w += right.w;
+    return left;
+}
 
-  get z() {
-    return this.data[2];
-  }
-
-  set z(value: number) {
-    this.data[2] = value;
-  }
-
-  get w() {
-    return this.data[3];
-  }
-
-  set w(value: number) {
-    this.data[3] = value;
-  }
-
-  /**
-   * Creates a new vec4 initialized with values from an existing vector
-   *
-   * @returns {vec4} a new 4D vector
-   */
-  clone() {
-    const x = this.data[0];
-    const y = this.data[1];
-    const z = this.data[2];
-    const w = this.data[3];
-    return new vec4(x, y, z, w);
-  }
-
-  /**
-   * Copy the values from one vec4 to another
-   *
-
-   * @param {ReadonlyVec4} vector the source vector
-   * @returns {vec4} out
-   */
-  copy(vector: vec4) {
-    this.data.set(vector.data);
-    return this;
-  }
-
-  /**
-   * Set the components of a vec4 to the given values
-   *
-   * @param {number} x X component
-   * @param {number} y Y component
-   * @param {number} z Z component
-   * @param {number} w W component
-   * @returns {vec4} out
-   */
-  set(x: number, y: number, z: number, w: number) {
-    const data = this.data
-    data[0] = x;
-    data[1] = y;
-    data[2] = z;
-    data[3] = w;
-    return this;
-  }
-
-  /**
-   * Adds two vec4's
-   * @param {ReadonlyVec4} vector the second operand
-   * @returns {vec4} out
-   */
-  add(vector: vec4) {
-    const out = this.data;
-    const a = this.data;
-    const b = vector.data
-    out[0] = a[0] + b[0];
-    out[1] = a[1] + b[1];
-    out[2] = a[2] + b[2];
-    out[3] = a[3] + b[3];
-    return this;
-  }
-
-  /**
-   * Subtracts vector b from vector a
-   * @param {ReadonlyVec4} vector the second operand
-   * @returns {vec4} out
-   */
-  subtract(vector: vec4) {
-    const data = this.data
-    const b = vector.data
-    data[0] = data[0] - b[0];
-    data[1] = data[1] - b[1];
-    data[2] = data[2] - b[2];
-    data[3] = data[3] - b[3];
-    return this;
-  }
-
-  /**
-   * Multiplies two vec4's
-   * 
-   * @param {ReadonlyVec4} vector the second operand
-   * @returns {vec4} out
-   */
-  multiply(vector: vec4) {
-    const { data: data } = this;
-    const b = vector.data
-    data[0] = data[0] * b[0];
-    data[1] = data[1] * b[1];
-    data[2] = data[2] * b[2];
-    data[3] = data[3] * b[3];
-    return this;
-  }
-
-  /**
-   * Divides two vec4's
-   * @param {ReadonlyVec4} vector the second operand
-   * @returns {vec4} out
-   */
-  divide(vector: vec4) {
-    const data = this.data
-    const b = vector.data
-    data[0] = data[0] / b[0];
-    data[1] = data[1] / b[1];
-    data[2] = data[2] / b[2];
-    data[3] = data[3] / b[3];
-    return this;
-  }
-
-  /**
-   * Scales a vec4 by a scalar number
-   *
-   * @param {number} s amount to scale the vector by
-   * @returns {vec4} out
-   */
-  scale(s: number) {
-    const out = this.data;
-    const a = this.data;
-    out[0] = a[0] * s;
-    out[1] = a[1] * s;
-    out[2] = a[2] * s;
-    out[3] = a[3] * s;
-    return this;
-  }
-
-  /**
-   * Calculates the euclidian distance between two vec4's
-   * @param {ReadonlyVec4} vector the second operand
-   * @returns {number} distance between a and b
-   */
-  distance(vector: vec4) {
-    const a = this.data;
-    const b = vector.data
-    let x = b[0] - a[0];
-    let y = b[1] - a[1];
-    let z = b[2] - a[2];
-    let w = b[3] - a[3];
-    return Math.hypot(x, y, z, w);
-  }
-
-  /**
-   * Calculates the squared euclidian distance between two vec4's
-   * @param {ReadonlyVec4} vector the second operand
-   * @returns {number} squared distance between a and b
-   */
-  squaredDistance(vector: vec4) {
-    const a = this.data;
-    const b = vector.data
-    let x = b[0] - a[0];
-    let y = b[1] - a[1];
-    let z = b[2] - a[2];
-    let w = b[3] - a[3];
-    return x * x + y * y + z * z + w * w;
-  }
-
-  /**
-   * Calculates the length of a vec4
-   *
-   * @returns {number} length of a
-   */
-  length() {
-    const [x, y, z, w] = this.data;
-    return Math.hypot(x, y, z, w);
-  }
-
-  /**
-   * Calculates the squared length of a vec4
-   *
-   * @returns {number} squared length of a
-   */
-  squaredLength() {
-    const [x, y, z, w] = this.data;
-    return x * x + y * y + z * z + w * w;
-  }
-
-  /**
-   * Negates the components of a vec4
-   *
-   * @returns {vec4} out
-   */
-  negate() {
-    const { data: a, data: out } = this;
-    out[0] = -a[0];
-    out[1] = -a[1];
-    out[2] = -a[2];
-    out[3] = -a[3];
-    return this;
-  }
-
-  /**
-   * Returns the inverse of the components of a vec4
-   *
-   * @returns {vec4} out
-   */
-  inverse() {
-    const { data: a, data: out } = this;
-    out[0] = 1.0 / a[0];
-    out[1] = 1.0 / a[1];
-    out[2] = 1.0 / a[2];
-    out[3] = 1.0 / a[3];
-    return this;
-  }
-
-  /**
-   * Normalize a vec4
-   *
-   * @returns {vec4} out
-   */
-  normalize() {
-    const { data: a, data: out } = this;
-    let x = a[0];
-    let y = a[1];
-    let z = a[2];
-    let w = a[3];
-    let len = x * x + y * y + z * z + w * w;
-    if (len > 0) {
-      len = 1 / Math.sqrt(len);
+/**
+ * Adds two vectors into a new vector
+ * @param left the left vector
+ * @param right the right vector
+ * @returns a new vector
+ */
+export function vec4Add(left: rvec4, right: rvec4): vec4
+{
+    return {
+        x: left.x + right.x,
+        y: left.y + right.y,
+        z: left.z + right.z,
+        w: left.w + right.w
     }
-    out[0] = x * len;
-    out[1] = y * len;
-    out[2] = z * len;
-    out[3] = w * len;
-    return this;
-  }
+}
 
-  /**
-   * Calculates the dot product of two vec4's
-   * 
-   * @param {ReadonlyVec4} vector the second operand
-   * @returns {number} dot product of a and b
-   */
-  dot(vector: vec4) {
-    const a = this.data;
-    const b = vector.data
-    return a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3];
-  }
+/**
+ * Subtracts vector other from vector vec
+ * @param left the left vector
+ * @param right the right vector
+ * @returns the left vector
+ */
+export function vec4SubFrom(left: vec4, right: rvec4)
+{
+    left.x -= right.x;
+    left.y -= right.y;
+    left.z -= right.z;
+    left.w -= right.w;
+    return left;
+}
 
-  /**
-   * Returns the cross-product of three vectors in a 4-dimensional space
-   *
-   * @param {ReadonlyVec4} v2 the second vector
-   * @param {ReadonlyVec4} v3 the third vector
-   * @returns {vec4} result
-   */
-  cross(v2: vec4, v3: vec4) {
-    const { data: u } = this;
-    const { data: v } = v2;
-    const { data: w } = v3;
-    let A = v[0] * w[1] - v[1] * w[0],
-      B = v[0] * w[2] - v[2] * w[0],
-      C = v[0] * w[3] - v[3] * w[0],
-      D = v[1] * w[2] - v[2] * w[1],
-      E = v[1] * w[3] - v[3] * w[1],
-      F = v[2] * w[3] - v[3] * w[2];
-    let G = u[0];
-    let H = u[1];
-    let I = u[2];
-    let J = u[3];
+/**
+ * Subtracts vector other from vector vec into a new vector
+ * @param left the left vector
+ * @param right the right vector
+ * @returns a new vector
+ */
+export function vec4Sub(left: rvec4, right: rvec4): vec4
+{
+    return {
+        x: left.x - right.x,
+        y: left.y - right.y,
+        z: left.z - right.z,
+        w: left.w - right.w,
+    }
+}
 
-    return new vec4(
-      H * F - I * E + J * D,
-      -(G * F) + I * C - J * B,
-      G * E - H * C + J * A,
-      -(G * D) + H * B - I * A
-    );
-  }
+/**
+ * Multiplies the left vector by the right vector
+ * @param left the left vector
+ * @param right the right vector
+ * @returns the left vector
+ */
+export function vec4MulTo(left: vec4, right: rvec4)
+{
+    left.x *= right.x;
+    left.y *= right.y;
+    left.z *= right.z;
+    left.w *= right.w;
+    return left;
+}
 
-  /**
-   * Performs a linear interpolation between two vec4's
-   * @param {ReadonlyVec4} vector the second operand
-   * @param {number} t interpolation amount, in the range [0-1], between the two inputs
-   * @returns {vec4} out
-   */
-  lerp(vector: vec4, t: number) {
-    const a = this.data;
-    const b = vector.data
-    let ax = a[0];
-    let ay = a[1];
-    let az = a[2];
-    let aw = a[3];
-    return this.set(
-      ax + t * (b[0] - ax),
-      ay + t * (b[1] - ay),
-      az + t * (b[2] - az),
-      aw + t * (b[3] - aw)
-    );
-  }
+/**
+ * Multiplies the left vector by the right vector into a new vector
+ * @param left the left vector
+ * @param right the right vector
+ * @returns a new vector
+ */
+export function vec4Mul(left: rvec4, right: rvec4): vec4
+{
+    return {
+        x: left.x * right.x,
+        y: left.y * right.y,
+        z: left.z * right.z,
+        w: left.w * right.w,
+    }
+}
+
+/**
+ * Divides the left vector by the right vector
+ * @param left the left vector
+ * @param right the right vector
+ * @returns a new vector
+ */
+export function vec4DivBy(vec: vec4, other: rvec4)
+{
+    vec.x /= other.x;
+    vec.y /= other.y;
+    vec.z /= other.z;
+    vec.w /= other.w;
+    return vec;
+}
+
+/**
+ * Divides the left vector by the right vector into a new vector
+ * @param left the left vector
+ * @param right the right vector
+ * @returns a new vector
+ */
+export function vec4Div(left: rvec4, right: rvec4): vec4
+{
+    return {
+        x: left.x / right.x,
+        y: left.y / right.y,
+        z: left.z / right.z,
+        w: left.w / right.w,
+    }
+}
+
+/**
+ * Scales the target vector by a scalar number
+ * @param v the target vector
+ * @param scale amount to scale the vector by
+ * @returns the target vector
+ */
+export function vec4ScaleBy(v: vec4, scale: number)
+{
+    v.x *= scale;
+    v.y *= scale;
+    v.z *= scale;
+    v.w *= scale;
+    return v;
+}
+
+/**
+ * Scales the target vector by a scalar number into a new vector
+ * @param v the target vector
+ * @param scale amount to scale the vector by
+ * @returns a new vector
+ */
+export function vec4Scale(v: rvec4, scale: number): vec4
+{
+    return {
+        x: v.x * scale,
+        y: v.y * scale,
+        z: v.z * scale,
+        w: v.w * scale
+    };
+}
+
+/**
+ * Calculates the Euclidean distance between two vectors
+ * @param left the left operand
+ * @param right the right operand
+ * @returns distance between left and right
+ */
+export function vec4Distance(left: rvec4, right: rvec4)
+{
+    const dx = left.x - right.x;
+    const dy = left.y - right.y;
+    const dz = left.z - right.z;
+    const dw = left.w - right.w;
+    return Math.sqrt(dx ** 2 + dy ** 2 + dz ** 2 + dw ** 2);
+}
+
+/**
+ * Calculates the squared euclidean distance between two vectors
+ * @param left the left operand
+ * @param right the right operand
+ * @returns squery distance between left and right
+ */
+export function vec4SquaredDistance(left: rvec4, right: rvec4)
+{
+    const dx = left.x - right.x;
+    const dy = left.y - right.y;
+    const dz = left.z - right.z;
+    const dw = left.w - right.w;
+    return dx ** 2 + dy ** 2 + dz ** 2 + dw ** 2;
+}
+
+/**
+ * Negates the components of vector v
+ * @param v the target vector
+ * @returns the target vector
+ */
+export function vec4Negate(v: vec4)
+{
+    v.x = -v.x;
+    v.y = -v.y;
+    v.z = -v.z;
+    v.w = -v.w;
+    return v;
+}
+
+/**
+ * Negates the components of vector v into a new vector
+ * @param v the target vector
+ * @returns a new vector
+ */
+export function vec4Negated(v: rvec4): vec4
+{
+    return {
+        x: -v.x,
+        y: -v.y,
+        z: -v.z,
+        w: -v.w
+    }
+}
+
+/**
+ * Inverse of the components of a vector
+ *
+ * @params v the target vector
+ * @returns the target vector
+ */
+export function vec4Inverse(v: vec4)
+{
+    v.x = 1.0 / v.x;
+    v.y = 1.0 / v.y;
+    v.z = 1.0 / v.z;
+    v.w = 1.0 / v.w;
+    return v;
+}
+
+/**
+ * Returns the inverse of the components of a vector into a new vector
+ *
+ * @params v the target vector
+ * @returns a new vector
+ */
+export function vec4Inversed(v: rvec4): vec4
+{
+    return {
+        x: 1.0 / v.x,
+        y: 1.0 / v.y,
+        z: 1.0 / v.z,
+        w: 1.0 / v.w
+    };
+}
+
+/**
+ * Normalize the given vector v
+ * @param v the target vector
+ * @returns the target vector
+ */
+export function vec4Normalize(v: vec4)
+{
+    let sqrtLen = vec4SquaredLength(v);
+    if (sqrtLen > 0)
+    {
+        sqrtLen = 1.0 / Math.sqrt(sqrtLen);
+    }
+
+    v.x *= sqrtLen;
+    v.y *= sqrtLen;
+    v.z *= sqrtLen;
+    v.w *= sqrtLen;
+    return v;
+}
+
+/**
+ * Normalize the given vector v into a new vector
+ * @param v the target vector
+ * @returns a new vector
+ */
+export function vec4Normalized(v: rvec4): vec4
+{
+    let sqrtLen = vec4SquaredLength(v);
+    if (sqrtLen > 0)
+    {
+        sqrtLen = 1.0 / Math.sqrt(sqrtLen);
+    }
+
+    return {
+        x: v.x * sqrtLen,
+        y: v.y * sqrtLen,
+        z: v.z * sqrtLen,
+        w: v.w * sqrtLen
+    }
+}
+
+/**
+ * Calculates the dot product of two vec4's
+ * @param left the left vector
+ * @param right the right vector
+ * @returns dot product of left and right
+ */
+export function vec4Dot(left: rvec4, right: rvec4)
+{
+    return left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w;
+}
+
+
+/**
+ * Returns the cross-product of three vectors in a 4-dimensional space
+ *
+ * @param v1 the first vector
+ * @param v2 the second vector
+ * @param v3 the third vector
+ * @returns a new vector
+ */
+export function vec4Cross(v1: rvec4, v2: rvec4, v3: rvec4): vec4
+{
+    const A = v2.x * v3.y - v2.y * v3.x,
+      B = v2.x * v3.z - v2.z * v3.x,
+      C = v2.x * v3.w - v2.w * v3.x,
+      D = v2.y * v3.z - v2.z * v3.y,
+      E = v2.y * v3.w - v2.w * v3.y,
+      F = v2.z * v3.w - v2.w * v3.z;
+    const G = v1.x;
+    const H = v1.y;
+    const I = v1.z;
+    const J = v1.w;
+
+    return {
+      x: H * F - I * E + J * D,
+      y: -(G * F) + I * C - J * B,
+      z: G * E - H * C + J * A,
+      w: -(G * D) + H * B - I * A
+    };
+}
+
+/**
+ * Performs a linear interpolation between two vectors into a new vector
+ *
+ * @param left the left vector
+ * @param right the right vector
+ * @param t interpolation amount, in the range [0-1], between the two inputs (not clamped)
+ * @returns a new vector
+ */
+export function vec4Lerp(left: rvec4, right: rvec4, t: number): vec4
+{
+    return {
+        x: left.x + t * (right.x - left.x),
+        y: left.y + t * (right.y - left.y),
+        z: left.z + t * (right.z - left.z),
+        w: left.w + t * (right.w - left.w)
+    };
+}
+
 
   /**
    * Transforms the vec4 with a mat4.
    * @param {mat4} matrix matrix to transform with
    * @returns {vec4} out
    */
+  /*
   transformMat4(matrix: mat4) {
     const { data: out, data: a } = this;
     const m = matrix.data;
@@ -351,12 +439,14 @@ export default class vec4 {
     out[3] = m[3] * x + m[7] * y + m[11] * z + m[15] * w;
     return this;
   }
+    */
 
   /**
    * Transforms the vec4 with a quat
    * @param {ReadonlyQuat} rotation quaternion to transform with
    * @returns {vec4} out
    */
+  /*
   transformQuat(rotation: quat) {
     const { data: out, data: a } = this;
     const q = rotation.data;
@@ -380,16 +470,12 @@ export default class vec4 {
     out[2] = iz * qw + iw * -qz + ix * -qy - iy * -qx;
     out[3] = a[3];
     return this;
-  }
+  }*/
 
-  /**
-   * Set the components of a vec4 to zero
-   *
-   * @returns {vec4} out
-   */
-  zero() {
-    this.data.fill(0);
-    return this;
-  }
-
+/**
+ * Creates a zero vector
+ */
+export function vec4Zero(): vec4
+{
+    return {x: 0, y: 0, z: 0, w: 0}
 }

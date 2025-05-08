@@ -1,8 +1,4 @@
-import mat2 from "./mat2";
-import mat3 from "./mat3";
-import mat4 from "./mat4";
 import { vec3 } from "./vec3";
-
 
 export interface vec2
 {
@@ -62,6 +58,18 @@ export function vec2Length(v: rvec2)
 {
     return Math.sqrt(v.x ** 2 + v.y ** 2);
 }
+
+/**
+ * Calculates the length of a vector
+ *
+ * @params v the target vector
+ * @returns length of a
+ */
+export function vec2LengthValues(x: number, y: number)
+{
+    return Math.sqrt(x ** 2 + y ** 2);
+}
+
 
 /**
  * Calculates the squared length of a vec2
@@ -209,6 +217,14 @@ export function vec2Scale(v: rvec2, scale: number): vec2
     };
 }
 
+export function vec2ScaleAndAdd(left: rvec2, right: rvec2, scale: number): vec2
+{
+    return {
+        x: left.x + (right.x * scale),
+        y: left.y + (right.y * scale),
+    }
+}
+
 /**
  * Calculates the Euclidean distance between two vectors
  * @param left the left operand
@@ -349,24 +365,6 @@ export function vec2Cross(left: rvec2, right: rvec2): vec3
 }
 
 /**
- * Performs a linear interpolation between two vectors
- *
- * @param left the left vector
- * @param right the right vector
- * @param t interpolation amount, in the range [0-1], between the two inputs (not clamped)
- * @returns the left vector
- */
-export function vec2LerpBy(left: vec2, right: rvec2, t: number)
-{
-    const x = left.x + t * (right.x - left.x);
-    const y = left.y + t * (right.y - left.y);
-
-    left.x = x;
-    left.y = y;
-    return left;
-}
-
-/**
  * Performs a linear interpolation between two vectors into a new vector
  *
  * @param left the left vector
@@ -381,7 +379,6 @@ export function vec2Lerp(left: rvec2, right: rvec2, t: number): vec2
         y: left.y + t * (right.y - left.y)
     };
 }
-
 
   /**
    * Transforms the vec2 with a mat2
@@ -480,13 +477,9 @@ export function vec2Lerp(left: rvec2, right: rvec2, t: number): vec2
 //   }
 
 /**
- * Set the components of a vector to zero
- * @params v the target vector
- * @returns the target vector
+ * Creates a zero vector
  */
-export function vec2Zero(v: vec2)
+export function vec2Zero(): vec2
 {
-    v.x = 0;
-    v.y = 0;
-    return v;
+    return {x: 0, y: 0}
 }

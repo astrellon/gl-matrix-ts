@@ -1,7 +1,3 @@
-import mat3 from "./mat3";
-import mat4 from "./mat4";
-import quat from "./quat";
-
 export interface vec3
 {
     x: number;
@@ -220,6 +216,20 @@ export function vec3Scale(v: rvec3, scale: number): vec3
 }
 
 /**
+ * Scales the target vector by a scalar number into a new vector
+ * @param v the target vector
+ * @param scale amount to scale the vector by
+ * @returns a new vector
+ */
+export function vec3ScaleAndAddBy(target: vec3, left: rvec3, right: rvec3, scale: number): vec3
+{
+    target.x = left.x + (right.x * scale);
+    target.y = left.y + (right.y * scale);
+    target.z = left.z + (right.z * scale);
+    return target;
+}
+
+/**
  * Calculates the Euclidean distance between two vectors
  * @param left the left operand
  * @param right the right operand
@@ -343,6 +353,26 @@ export function vec3Normalized(v: rvec3): vec3
 }
 
 /**
+ * Normalize the given vector v into a new vector
+ * @param v the target vector
+ * @returns a new vector
+ */
+export function vec3NormalizedValues(x: number, y: number, z: number): vec3
+{
+    let sqrtLen = x ** 2 + y ** 2 + z ** 2;
+    if (sqrtLen > 0)
+    {
+        sqrtLen = 1.0 / Math.sqrt(sqrtLen);
+    }
+
+    return {
+        x: x * sqrtLen,
+        y: y * sqrtLen,
+        z: z * sqrtLen
+    }
+}
+
+/**
  * Calculates the dot product of two vec3's
  * @param left the left vector
  * @param right the right vector
@@ -384,26 +414,6 @@ export function vec3Cross(left: rvec3, right: rvec3): vec3
         y: left.z * right.x - left.x * right.z,
         z: left.x * right.y - left.y * right.z
     };
-}
-
-/**
- * Performs a linear interpolation between two vectors
- *
- * @param left the left vector
- * @param right the right vector
- * @param t interpolation amount, in the range [0-1], between the two inputs (not clamped)
- * @returns the left vector
- */
-export function vec3LerpBy(left: vec3, right: rvec3, t: number)
-{
-    const x = left.x + t * (right.x - left.x);
-    const y = left.y + t * (right.y - left.y);
-    const z = left.z + t * (right.z - left.z);
-
-    left.x = x;
-    left.y = y;
-    left.z = z;
-    return left;
 }
 
 /**
@@ -725,14 +735,9 @@ export function vec3Slerp(left: rvec3, right: rvec3, t: number): vec3
         */
 
 /**
- * Set the components of a vector to zero
- * @params v the target vector
- * @returns the target vector
+ * Creates a zero vector
  */
-export function vec3Zero(v: vec3)
+export function vec3Zero(): vec3
 {
-    v.x = 0;
-    v.y = 0;
-    v.z = 0;
-    return v;
+    return {x: 0, y: 0, z: 0}
 }

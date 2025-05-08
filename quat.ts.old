@@ -394,7 +394,7 @@ export default class quat {
 
   /**
    * Creates a quaternion from the given 3x3 rotation matrix.
-   * 
+   *
    * NOTE: The resultant quaternion is not normalized, so you should be sure
    * to renormalize the quaternion yourself where necessary.
    * @param {mat3} matrix rotation matrix
