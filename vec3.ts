@@ -2,266 +2,475 @@ import mat3 from "./mat3";
 import mat4 from "./mat4";
 import quat from "./quat";
 
-export interface ReadonlyVec3
+export interface vec3
 {
-    readonly x: number;
-    readonly y: number;
-    readonly z: number;
+    x: number;
+    y: number;
+    z: number;
 }
 
-export default class vec3 implements ReadonlyVec3
+export type rvec3 = Readonly<vec3>;
+
+/**
+ * Clones this vector
+ *
+ * @param v the vector to clone
+ * @returns a new vector
+ */
+export function vec3Clone(v: rvec3): vec3
 {
-    public x: number;
-    public y: number;
-    public z: number;
+    return {x: v.x, y: v.y, z: v.z};
+}
 
-    public constructor(x: number = 0, y: number = 0, z: number = 0)
+/**
+ * Copy the values from one vec3 to another
+ * @param v the target vector
+ * @param a the copy vector
+ * @returns the target vector
+ */
+export function vec3Copy(v: vec3, a: rvec3)
+{
+    v.x = a.x;
+    v.y = a.y;
+    v.z = a.z;
+    return v;
+}
+
+/**
+ * Set the components of a vec3 to the given values
+ *
+ * @param v the target vector
+ * @param x X component
+ * @param y Y component
+ * @param z Z component
+ * @returns the target vector
+ */
+export function vec3Set(v: vec3, x: number, y: number, z: number)
+{
+    v.x = x;
+    v.y = y;
+    v.z = z;
+    return v;
+}
+
+/**
+ * Calculates the length vector v
+ *
+ * @params the source vector
+ * @returns length of v
+ */
+export function vec3Length(v: rvec3)
+{
+    return Math.sqrt(v.x ** 2 + v.y ** 2 + v.z ** 2);
+}
+
+/**
+ * Calculates the squared length of a vec3
+ *
+ * @returns squared length of v
+ */
+export function vec3SquaredLength(v: rvec3)
+{
+    return v.x ** 2 + v.y ** 2 + v.z ** 2;
+}
+
+/**
+ * Adds vector other into vec
+ * @param left the left vector
+ * @param right the right vector
+ * @returns the target vector
+ */
+export function vec3AddTo(left: vec3, right: rvec3)
+{
+    left.x += right.x;
+    left.y += right.y;
+    left.z += right.z;
+    return left;
+}
+
+/**
+ * Adds two vectors into a new vector
+ * @param left the left vector
+ * @param right the right vector
+ * @returns a new vector
+ */
+export function vec3Add(left: rvec3, right: rvec3): vec3
+{
+    return {
+        x: left.x + right.x,
+        y: left.y + right.y,
+        z: left.z + right.z,
+    }
+}
+
+/**
+ * Subtracts vector other from vector vec
+ * @param left the left vector
+ * @param right the right vector
+ * @returns the left vector
+ */
+export function vec3SubFrom(left: vec3, right: rvec3)
+{
+    left.x -= right.x;
+    left.y -= right.y;
+    left.z -= right.z;
+    return left;
+}
+
+/**
+ * Subtracts vector other from vector vec into a new vector
+ * @param left the left vector
+ * @param right the right vector
+ * @returns a new vector
+ */
+export function vec3Sub(left: rvec3, right: rvec3): vec3
+{
+    return {
+        x: left.x - right.x,
+        y: left.y - right.y,
+        z: left.z - right.z,
+    }
+}
+
+/**
+ * Multiplies the left vector by the right vector
+ * @param left the left vector
+ * @param right the right vector
+ * @returns the left vector
+ */
+export function vec3MulTo(left: vec3, right: rvec3)
+{
+    left.x *= right.x;
+    left.y *= right.y;
+    left.z *= right.z;
+    return left;
+}
+
+/**
+ * Multiplies the left vector by the right vector into a new vector
+ * @param left the left vector
+ * @param right the right vector
+ * @returns a new vector
+ */
+export function vec3Mul(left: rvec3, right: rvec3): vec3
+{
+    return {
+        x: left.x * right.x,
+        y: left.y * right.y,
+        z: left.z * right.z,
+    }
+}
+
+/**
+ * Divides the left vector by the right vector
+ * @param left the left vector
+ * @param right the right vector
+ * @returns a new vector
+ */
+export function vec3DivBy(vec: vec3, other: rvec3)
+{
+    vec.x /= other.x;
+    vec.y /= other.y;
+    vec.z /= other.z;
+    return vec;
+}
+
+/**
+ * Divides the left vector by the right vector into a new vector
+ * @param left the left vector
+ * @param right the right vector
+ * @returns a new vector
+ */
+export function vec3Div(left: rvec3, right: rvec3): vec3
+{
+    return {
+        x: left.x / right.x,
+        y: left.y / right.y,
+        z: left.z / right.z,
+    }
+}
+
+/**
+ * Scales the target vector by a scalar number
+ * @param v the target vector
+ * @param scale amount to scale the vector by
+ * @returns the target vector
+ */
+export function vec3ScaleBy(v: vec3, scale: number)
+{
+    v.x *= scale;
+    v.y *= scale;
+    v.z *= scale;
+    return v;
+}
+
+/**
+ * Scales the target vector by a scalar number into a new vector
+ * @param v the target vector
+ * @param scale amount to scale the vector by
+ * @returns a new vector
+ */
+export function vec3Scale(v: rvec3, scale: number): vec3
+{
+    return {
+        x: v.x * scale,
+        y: v.y * scale,
+        z: v.z * scale
+    };
+}
+
+/**
+ * Calculates the Euclidean distance between two vectors
+ * @param left the left operand
+ * @param right the right operand
+ * @returns distance between left and right
+ */
+export function vec3Distance(left: rvec3, right: rvec3)
+{
+    const dx = left.x - right.x;
+    const dy = left.y - right.y;
+    const dz = left.z - right.z;
+    return Math.sqrt(dx ** 2 + dy ** 2 + dz ** 2);
+}
+
+/**
+ * Calculates the squared euclidean distance between two vectors
+ * @param left the left operand
+ * @param right the right operand
+ * @returns squery distance between left and right
+ */
+export function vec3SquaredDistance(left: rvec3, right: rvec3)
+{
+    const dx = left.x - right.x;
+    const dy = left.y - right.y;
+    const dz = left.z - right.z;
+    return dx ** 2 + dy ** 2 + dz ** 2;
+}
+
+/**
+ * Negates the components of vector v
+ * @param v the target vector
+ * @returns the target vector
+ */
+export function vec3Negate(v: vec3)
+{
+    v.x = -v.x;
+    v.y = -v.y;
+    v.z = -v.z;
+    return v;
+}
+
+/**
+ * Negates the components of vector v into a new vector
+ * @param v the target vector
+ * @returns a new vector
+ */
+export function vec3Negated(v: rvec3): vec3
+{
+    return {
+        x: -v.x,
+        y: -v.y,
+        z: -v.z
+    }
+}
+
+/**
+ * Inverse of the components of a vector
+ *
+ * @params v the target vector
+ * @returns the target vector
+ */
+export function vec3Inverse(v: vec3)
+{
+    v.x = 1.0 / v.x;
+    v.y = 1.0 / v.y;
+    v.z = 1.0 / v.z;
+    return v;
+}
+
+/**
+ * Returns the inverse of the components of a vector into a new vector
+ *
+ * @params v the target vector
+ * @returns a new vector
+ */
+export function vec3Inversed(v: rvec3): vec3
+{
+    return {
+        x: 1.0 / v.x,
+        y: 1.0 / v.y,
+        z: 1.0 / v.z
+    };
+}
+
+/**
+ * Normalize the given vector v
+ * @param v the target vector
+ * @returns the target vector
+ */
+export function vec3Normalize(v: vec3)
+{
+    let sqrtLen = vec3SquaredLength(v);
+    if (sqrtLen > 0)
     {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        sqrtLen = 1.0 / Math.sqrt(sqrtLen);
     }
 
-    /**
-     * Clones this vec3
-     *
-     * @returns a new 3D vector
-     */
-    public clone()
+    v.x *= sqrtLen;
+    v.y *= sqrtLen;
+    v.z *= sqrtLen;
+    return v;
+}
+
+/**
+ * Normalize the given vector v into a new vector
+ * @param v the target vector
+ * @returns a new vector
+ */
+export function vec3Normalized(v: rvec3): vec3
+{
+    let sqrtLen = vec3SquaredLength(v);
+    if (sqrtLen > 0)
     {
-        return new vec3(this.x, this.y, this.z);
+        sqrtLen = 1.0 / Math.sqrt(sqrtLen);
     }
 
-    /**
-     * Calculates the length of this vec3
-     */
-    public length()
-    {
-        return Math.sqrt(this.x ** 2 + this.y ** 2 + this.z ** 2);
+    return {
+        x: v.x * sqrtLen,
+        y: v.y * sqrtLen,
+        z: v.z * sqrtLen
     }
+}
 
-    /**
-     * Calculates the squared length of a vec3
-     *
-     * @returns squared length of a
-     */
-    public squaredLength()
-    {
-        return this.x ** 2 + this.y ** 2 + this.z ** 2;
-    }
+/**
+ * Calculates the dot product of two vec3's
+ * @param left the left vector
+ * @param right the right vector
+ * @returns dot product of left and right
+ */
+export function vec3Dot(left: rvec3, right: rvec3)
+{
+    return left.x * right.x + left.y * right.y + left.z * right.z;
+}
 
-    /**
-     * Copy the values from one vec3 to another
-     * @param v the source vector
-     * @returns out
-     */
-    public copy(v: ReadonlyVec3)
-    {
-        this.x = v.x;
-        this.y = v.y;
-        this.z = v.z;
-        return this;
-    }
+/**
+ * Computes the cross product of two vectors into the left vector
+ * @param left the left vector
+ * @param right the right vector
+ * @returns the left vector
+ */
+export function vec3CrossBy(left: vec3, right: rvec3)
+{
+    const x = left.y * right.z - left.z * right.y;
+    const y = left.z * right.x - left.x * right.z;
+    const z = left.x * right.y - left.y * right.z;
 
-    /**
-     * Set the components of a vec3 to the given values
-     *
-     * @param x X component
-     * @param y Y component
-     * @param z Z component
-     * @returns out
-     */
-    public set(x: number, y: number, z: number)
-    {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        return this;
-    }
+    left.x = x;
+    left.y = y;
+    left.z = z;
+    return left;
+}
 
-    /**
-     * Adds two vec3's
-     * @param v the second operand
-     */
-    public add(v: ReadonlyVec3)
-    {
-        this.x += v.x;
-        this.y += v.y;
-        this.z += v.z;
-        return this;
-    }
+/**
+ * Computes the cross product of two vectors into a new vector
+ * @param left the left vector
+ * @param right the right vector
+ * @returns a new vector
+ */
+export function vec3Cross(left: rvec3, right: rvec3): vec3
+{
+    return {
+        x: left.y * right.z - left.z * right.y,
+        y: left.z * right.x - left.x * right.z,
+        z: left.x * right.y - left.y * right.z
+    };
+}
 
-    /**
-     * Subtracts vector b from vector a
-     * @param v the second operand
-     */
-    public subtract(v: ReadonlyVec3)
-    {
-        this.x -= v.x;
-        this.y -= v.y;
-        this.z -= v.z;
-        return this;
-    }
+/**
+ * Performs a linear interpolation between two vectors
+ *
+ * @param left the left vector
+ * @param right the right vector
+ * @param t interpolation amount, in the range [0-1], between the two inputs (not clamped)
+ * @returns the left vector
+ */
+export function vec3LerpBy(left: vec3, right: rvec3, t: number)
+{
+    const x = left.x + t * (right.x - left.x);
+    const y = left.y + t * (right.y - left.y);
+    const z = left.z + t * (right.z - left.z);
 
-    /**
-     * Multiplies two vec3's
-     * @param v the second operand
-     */
-    public multiply(v: ReadonlyVec3)
-    {
-        this.x *= v.x;
-        this.y *= v.y;
-        this.z *= v.z;
-        return this;
-    }
+    left.x = x;
+    left.y = y;
+    left.z = z;
+    return left;
+}
 
-    /**
-     * Divides two vec3's
-     * @param v the second operand
-     */
-    public divide(v: ReadonlyVec3)
-    {
-        this.x /= v.x;
-        this.y /= v.y;
-        this.z /= v.z;
-        return this;
-    }
+/**
+ * Performs a linear interpolation between two vectors into a new vector
+ *
+ * @param left the left vector
+ * @param right the right vector
+ * @param t interpolation amount, in the range [0-1], between the two inputs (not clamped)
+ * @returns a new vector
+ */
+export function vec3Lerp(left: rvec3, right: rvec3, t: number): vec3
+{
+    return {
+        x: left.x + t * (right.x - left.x),
+        y: left.y + t * (right.y - left.y),
+        z: left.z + t * (right.z - left.z)
+    };
+}
 
-    /**
-     * Scales a vec3 by a scalar number
-     * @param v amount to scale the vector by
-     */
-    public scale(v: number)
-    {
-        this.x *= v;
-        this.y *= v;
-        this.z *= v;
-        return this;
-    }
+/**
+ * Performs a spherical linear interpolation between two vectors
+ *
+ * @param left the left vector
+ * @param right the right vector
+ * @param t interpolation amount, in the range [0-1], between the two inputs
+ * @returns the left vector
+ */
+export function vec3SlerpBy(left: vec3, right: rvec3, t: number)
+{
+    const angle = Math.acos(Math.min(Math.max(vec3Dot(left, right), -1), 1));
+    const sinTotal = 1.0 / Math.sin(angle);
 
-    /**
-     * Calculates the Euclidean distance between two vec3's
-     * @param vector the second operand
-     * @returns distance between a and b
-     */
-    public distance(vector: ReadonlyVec3)
-    {
-        const dx = vector.x - this.x;
-        const dy = vector.y - this.y;
-        const dz = vector.z - this.z;
-        return Math.sqrt(dx ** 2 + dy ** 2 + dz ** 2);
-    }
+    const ratioA = Math.sin((1 - t) * angle) * sinTotal;
+    const ratioB = Math.sin(t * angle) * sinTotal;
 
-    /**
-     * Calculates the squared euclidean distance between two vec3's
-     * @param vector the second operand
-     * @returns squared distance between a and b
-     */
-    public squaredDistance(vector: ReadonlyVec3)
-    {
-        const dx = vector.x - this.x;
-        const dy = vector.y - this.y;
-        const dz = vector.z - this.z;
-        return dx ** 2 + dy ** 2 + dz ** 2;
-    }
+    const x = ratioA * left.x + ratioB * right.x;
+    const y = ratioA * left.y + ratioB * right.y;
+    const z = ratioA * left.z + ratioB * right.z;
 
-    /**
-     * Negates the components of a vec3
-     */
-    public negate()
-    {
-        this.x = -this.x;
-        this.y = -this.y;
-        this.z = -this.z;
-        return this;
-    }
+    left.x = x;
+    left.y = y;
+    left.z = z;
+    return left;
+}
 
-    /**
-     * Returns the inverse of the components of a vec3
-     */
-    public inverse()
-    {
-        this.x = 1.0 / this.x;
-        this.y = 1.0 / this.y;
-        this.z = 1.0 / this.z;
-        return this;
-    }
+/**
+ * Performs a spherical linear interpolation between two vectors into a new vector
+ *
+ * @param left the left vector
+ * @param right the right vector
+ * @param t interpolation amount, in the range [0-1], between the two inputs
+ * @returns a new vector
+ */
+export function vec3Slerp(left: rvec3, right: rvec3, t: number): vec3
+{
+    const angle = Math.acos(Math.min(Math.max(vec3Dot(left, right), -1), 1));
+    const sinTotal = 1.0 / Math.sin(angle);
 
-    /**
-     * Normalize a vec3
-     */
-    public normalize()
-    {
-        let sqrtLen = this.squaredLength();
-        if (sqrtLen > 0)
-        {
-            sqrtLen = 1.0 / Math.sqrt(sqrtLen);
-        }
+    const ratioA = Math.sin((1 - t) * angle) * sinTotal;
+    const ratioB = Math.sin(t * angle) * sinTotal;
 
-        this.x *= sqrtLen;
-        this.y *= sqrtLen;
-        this.z *= sqrtLen;
-        return this;
-    }
-
-    /**
-     * Calculates the dot product of two vec3's
-     * @param vector the second operand
-     * @returns dot product of a and b
-     */
-    public dot(vector: ReadonlyVec3)
-    {
-        return this.x * vector.x + this.y * vector.y + this.z * vector.z;
-    }
-
-    /**
-     * Computes the cross product of two vec3's
-     * @param vector the second operand
-     */
-    public cross(vector: ReadonlyVec3)
-    {
-        return this.set(
-            this.y * vector.z - this.z * vector.y,
-            this.z * vector.x - this.x * vector.z,
-            this.x * vector.y - this.y * vector.z
-        );
-    }
-
-    /**
-     * Performs a linear interpolation between two vec3's
-     *
-     * @param vector the second operand
-     * @param t interpolation amount, in the range [0-1], between the two inputs
-     */
-    public lerp(vector: ReadonlyVec3, t: number)
-    {
-        return this.set(
-            this.x + t * (vector.x - this.x),
-            this.y + t * (vector.y - this.y),
-            this.z + t * (vector.z - this.z)
-        );
-    }
-
-    /**
-     * Performs a spherical linear interpolation between two vec3's
-     *
-     * @param vector the second operand
-     * @param t interpolation amount, in the range [0-1], between the two inputs
-     */
-    public slerp(vector: ReadonlyVec3, t: number)
-    {
-        const angle = Math.acos(Math.min(Math.max(this.dot(vector), -1), 1));
-        const sinTotal = 1.0 / Math.sin(angle);
-
-        const ratioA = Math.sin((1 - t) * angle) * sinTotal;
-        const ratioB = Math.sin(t * angle) * sinTotal;
-
-        return this.set(
-            ratioA * this.x + ratioB * vector.x,
-            ratioA * this.y + ratioB * vector.y,
-            ratioA * this.z + ratioB * vector.z
-        );
-    }
+    return {
+        x: ratioA * left.x + ratioB * right.x,
+        y: ratioA * left.y + ratioB * right.y,
+        z: ratioA * left.z + ratioB * right.z
+    };
+}
 
     /**
      * Performs a hermite interpolation with two control points
@@ -515,14 +724,15 @@ export default class vec3 implements ReadonlyVec3
     }
         */
 
-    /**
-     * Set the components of a vec3 to zero
-     */
-    public zero()
-    {
-        this.x = 0;
-        this.y = 0;
-        this.z = 0;
-        return this;
-    }
+/**
+ * Set the components of a vector to zero
+ * @params v the target vector
+ * @returns the target vector
+ */
+export function vec3Zero(v: vec3)
+{
+    v.x = 0;
+    v.y = 0;
+    v.z = 0;
+    return v;
 }

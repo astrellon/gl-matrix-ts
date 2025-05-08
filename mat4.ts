@@ -7,6 +7,85 @@ import vec3 from "./vec3";
  * @module mat4
  */
 
+interface mat4_2
+{
+    m00: number;
+    m01: number;
+    m02: number;
+    m03: number;
+    m10: number;
+    m11: number;
+    m12: number;
+    m13: number;
+    m20: number;
+    m21: number;
+    m22: number;
+    m23: number;
+    m30: number;
+    m31: number;
+    m32: number;
+    m33: number;
+}
+
+function invert2(data: mat4_2) {
+    let a00 = data.m00,
+        a01 = data.m01,
+        a02 = data.m02,
+        a03 = data.m03;
+    let a10 = data.m10,
+        a11 = data.m11,
+        a12 = data.m12,
+        a13 = data.m13;
+    let a20 = data.m20,
+        a21 = data.m21,
+        a22 = data.m22,
+        a23 = data.m23;
+    let a30 = data.m30,
+        a31 = data.m31,
+        a32 = data.m32,
+        a33 = data.m33;
+
+    const b00 = a00 * a11 - a01 * a10;
+    const b01 = a00 * a12 - a02 * a10;
+    const b02 = a00 * a13 - a03 * a10;
+    const b03 = a01 * a12 - a02 * a11;
+    const b04 = a01 * a13 - a03 * a11;
+    const b05 = a02 * a13 - a03 * a12;
+    const b06 = a20 * a31 - a21 * a30;
+    const b07 = a20 * a32 - a22 * a30;
+    const b08 = a20 * a33 - a23 * a30;
+    const b09 = a21 * a32 - a22 * a31;
+    const b10 = a21 * a33 - a23 * a31;
+    const b11 = a22 * a33 - a23 * a32;
+
+    // Calculate the determinant
+    let det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+
+    if (!det) {
+        return null;
+    }
+    det = 1.0 / det;
+
+    data.m00 = (a11 * b11 - a12 * b10 + a13 * b09) * det;
+    data.m01 = (a02 * b10 - a01 * b11 - a03 * b09) * det;
+    data.m02 = (a31 * b05 - a32 * b04 + a33 * b03) * det;
+    data.m03 = (a22 * b04 - a21 * b05 - a23 * b03) * det;
+    data.m10 = (a12 * b08 - a10 * b11 - a13 * b07) * det;
+    data.m11 = (a00 * b11 - a02 * b08 + a03 * b07) * det;
+    data.m12 = (a32 * b02 - a30 * b05 - a33 * b01) * det;
+    data.m13 = (a20 * b05 - a22 * b02 + a23 * b01) * det;
+    data.m20 = (a10 * b10 - a11 * b08 + a13 * b06) * det;
+    data.m21 = (a01 * b08 - a00 * b10 - a03 * b06) * det;
+    data.m22 = (a30 * b04 - a31 * b02 + a33 * b00) * det;
+    data.m23 = (a21 * b02 - a20 * b04 - a23 * b00) * det;
+    data.m30 = (a11 * b07 - a10 * b09 - a12 * b06) * det;
+    data.m31 = (a00 * b09 - a01 * b07 + a02 * b06) * det;
+    data.m32 = (a31 * b01 - a30 * b03 - a32 * b00) * det;
+    data.m33 = (a20 * b03 - a21 * b01 + a22 * b00) * det;
+
+    return this;
+}
+
 export default class mat4 {
   private static readonly _identity = new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
 
@@ -616,7 +695,7 @@ export default class mat4 {
   /**
    * Creates a matrix from a vector scaling
    * This is equivalent to (but much faster than):
-   * 
+   *
    *     mat4.identity(dest);
    *     mat4.scale(dest, dest, vec);
    * @param {vec3} vector Scaling vector
@@ -700,7 +779,7 @@ export default class mat4 {
   /**
    * Creates a matrix from the given angle around the X axis
    * This is equivalent to (but much faster than):
-   * 
+   *
    *     mat4.identity(dest);
    *     mat4.rotateX(dest, dest, rad);
    * @param {number} rad the angle to rotate the matrix by
@@ -734,7 +813,7 @@ export default class mat4 {
   /**
    * Creates a matrix from the given angle around the Y axis
    * This is equivalent to (but much faster than):
-   * 
+   *
    *     mat4.identity(dest);
    *     mat4.rotateY(dest, dest, rad);
    * @param {number} rad the angle to rotate the matrix by
@@ -768,7 +847,7 @@ export default class mat4 {
   /**
    * Creates a matrix from the given angle around the Z axis
    * This is equivalent to (but much faster than):
-   * 
+   *
    *     mat4.identity(dest);
    *     mat4.rotateZ(dest, dest, rad);
    * @param {number} rad the angle to rotate the matrix by
@@ -802,7 +881,7 @@ export default class mat4 {
   /**
    * Creates a matrix from a quaternion rotation and vector translation
    * This is equivalent to (but much faster than):
-   * 
+   *
    *     mat4.identity(dest);
    *     mat4.translate(dest, vec);
    *     let quatMat = mat4.create();
@@ -1034,7 +1113,7 @@ export default class mat4 {
   /**
    * Creates a matrix from a quaternion rotation, vector translation and vector scale
    * This is equivalent to (but much faster than):
-   * 
+   *
    *     mat4.identity(dest);
    *     mat4.translate(dest, vec);
    *     let quatMat = mat4.create();
@@ -1096,7 +1175,7 @@ export default class mat4 {
   /**
    * Creates a matrix from a quaternion rotation, vector translation and vector scale, rotating and scaling around the given origin
    * This is equivalent to (but much faster than):
-   * 
+   *
    *     mat4.identity(dest);
    *     mat4.translate(dest, vec);
    *     mat4.translate(dest, origin);
