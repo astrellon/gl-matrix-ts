@@ -1464,7 +1464,7 @@ export function mat4SetLookAt(m: mat4, eye: rvec3, center: rvec3, up: rvec3)
     z1 = eye.y - center.y;
     z2 = eye.z - center.z;
 
-    len = 1 / Math.hypot(z0, z1, z2);
+    len = 1 / Math.sqrt(z0 ** 2 + z1 ** 2 + z2 ** 2);
     z0 *= len;
     z1 *= len;
     z2 *= len;
@@ -1472,7 +1472,7 @@ export function mat4SetLookAt(m: mat4, eye: rvec3, center: rvec3, up: rvec3)
     x0 = up.y * z2 - up.z * z1;
     x1 = up.z * z0 - up.x * z2;
     x2 = up.x * z1 - up.y * z0;
-    len = Math.hypot(x0, x1, x2);
+    len = Math.sqrt(x0 ** 2 + x1 ** 2 + x2 ** 2);
     if (!len)
     {
         x0 = 0;
@@ -1491,7 +1491,7 @@ export function mat4SetLookAt(m: mat4, eye: rvec3, center: rvec3, up: rvec3)
     y1 = z2 * x0 - z0 * x2;
     y2 = z0 * x1 - z1 * x0;
 
-    len = Math.hypot(y0, y1, y2);
+    len = Math.sqrt(y0 ** 2 + y1 ** 2 + y2 ** 2);
     if (!len)
     {
         y0 = 0;
@@ -1540,7 +1540,7 @@ export function mat4SetTargetTo(m: mat4, eye: rvec3, center: rvec3, up: rvec3)
       z1 = eye.y - center.y,
       z2 = eye.z - center.z;
 
-    let len = z0 * z0 + z1 * z1 + z2 * z2;
+    let len = z0 ** 2 + z1 ** 2 + z2 ** 2;
     if (len > 0)
     {
         len = 1 / Math.sqrt(len);
@@ -1553,7 +1553,7 @@ export function mat4SetTargetTo(m: mat4, eye: rvec3, center: rvec3, up: rvec3)
       x1 = up.z * z0 - up.x * z2,
       x2 = up.x * z1 - up.y * z0;
 
-    len = x0 * x0 + x1 * x1 + x2 * x2;
+    len = x0 ** 2 + x1 ** 2 + x2 ** 2;
     if (len > 0)
     {
         len = 1 / Math.sqrt(len);

@@ -1,3 +1,6 @@
+import { rmat3 } from "./mat3";
+import { rmat4 } from "./mat4";
+
 export interface vec3
 {
     x: number;
@@ -542,49 +545,35 @@ export function vec3Slerp(left: rvec3, right: rvec3, t: number): vec3
     }
         */
 
-    /**
-     * Transforms the vec3 with a mat4.
-     * 4th vector component is implicitly '1'
-     * @param {mat4} matrix matrix to transform with
-     * @returns {vec3} out
-     */
-    /*
-    transformMat4(matrix: mat4) {
-        const { data } = this;
-        const m = matrix.data;
-        let x = data[0],
-            y = data[1],
-            z = data[2];
-        let w = m[3] * x + m[7] * y + m[11] * z + m[15];
-        w = w || 1.0;
-        return this.set(
-            (m[0] * x + m[4] * y + m[8] * z + m[12]) / w,
-            (m[1] * x + m[5] * y + m[9] * z + m[13]) / w,
-            (m[2] * x + m[6] * y + m[10] * z + m[14]) / w
-        );
-    }
-        */
+/**
+ * Transforms the vec3 with a mat4.
+ * 4th vector component is implicitly '1'
+ * @param {mat4} matrix matrix to transform with
+ * @returns {vec3} out
+ */
+export function vec3TransformMat4(v: vec3, m: rmat4)
+{
+    const w = (m.m03 * v.x + m.m13 * v.y + m.m23 * v.z + m.m33) || 1.0;
 
-    /**
-     * Transforms the vec3 with a mat3.
-     *
-     * @param {mat3} matrix the 3x3 matrix to transform with
-     * @returns {vec3} out
-     */
-    /*
-    transformMat3(matrix: mat3) {
-        const a = this.data;
-        const m = matrix.data;
-        let x = a[0],
-            y = a[1],
-            z = a[2];
-        return this.set(
-            x * m[0] + y * m[3] + z * m[6],
-            x * m[1] + y * m[4] + z * m[7],
-            x * m[2] + y * m[5] + z * m[8]
-        );
-    }
-        */
+    v.x = (m.m00 * v.x + m.m10 * v.y + m.m20 * v.z + m.m30) / w;
+    v.y = (m.m01 * v.x + m.m11 * v.y + m.m21 * v.z + m.m31) / w;
+    v.z = (m.m02 * v.x + m.m12 * v.y + m.m22 * v.z + m.m32) / w;
+    return v;
+}
+
+/**
+ * Transforms the vec3 with a mat3.
+ *
+ * @param {mat3} matrix the 3x3 matrix to transform with
+ * @returns {vec3} out
+ */
+export function vec3TransformMat3(v: vec3, m: rmat3)
+{
+    v.x = v.x * m.m00 + v.y * m.m10 + v.z * m.m20,
+    v.y = v.x * m.m01 + v.y * m.m11 + v.z * m.m21,
+    v.z = v.x * m.m02 + v.y * m.m12 + v.z * m.m22
+    return v;
+}
 
     /**
      * Transforms the vec3 with a quat
@@ -740,4 +729,31 @@ export function vec3Slerp(left: rvec3, right: rvec3, t: number): vec3
 export function vec3Zero(): vec3
 {
     return {x: 0, y: 0, z: 0}
+}
+
+export function vec3Abs(v: rvec3): vec3
+{
+    return {
+        x: Math.abs(v.x),
+        y: Math.abs(v.y),
+        z: Math.abs(v.z),
+    }
+}
+
+export function vec3Max(v: rvec3, s: number): vec3
+{
+    return {
+        x: Math.max(v.x, s),
+        y: Math.max(v.y, s),
+        z: Math.max(v.z, s),
+    }
+}
+
+export function vec3Min(v: rvec3, s: number): vec3
+{
+    return {
+        x: Math.min(v.x, s),
+        y: Math.min(v.y, s),
+        z: Math.min(v.z, s),
+    }
 }
