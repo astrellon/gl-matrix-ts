@@ -67,6 +67,7 @@ export function vec4Length(v: rvec4)
 /**
  * Calculates the squared length of a vec4
  *
+ * @params the source vector
  * @returns squared length of v
  */
 export function vec4SquaredLength(v: rvec4)

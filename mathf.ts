@@ -2,10 +2,12 @@
  * Common utilities
  * @module glMatrix
  */
+export type AngleOrder = 'xyz' | 'xzy' | 'yxz' | 'yzx' | 'zxy' | 'zyx';
+
 export default class mathf {
     // Configuration Constants
     static readonly EPSILON = 0.000001;
-    static readonly ANGLE_ORDER = "zyx";
+    static readonly ANGLE_ORDER: AngleOrder = "zyx";
     static readonly DegToRad = Math.PI / 180;
     static readonly RadToDeg = 180 / Math.PI;
 

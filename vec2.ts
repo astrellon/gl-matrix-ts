@@ -433,48 +433,46 @@ export function vec2Lerp(left: rvec2, right: rvec2, t: number): vec2
 //     );
 //   }
 
-  /**
-   * Rotate a 2D vector
-   * @param {vec2} origin The origin of the rotation
-   * @param {number} rad The angle of rotation in radians
-   * @returns {vec2} out
-   */
-//   rotate(origin: vec2, rad: number) {
-//     const a=this.data;
-//     const b=origin.data;
-//     //Translate point to the origin
-//     let p0 = a[0] - b[0],
-//       p1 = a[1] - b[1],
-//       sinC = Math.sin(rad),
-//       cosC = Math.cos(rad);
+/**
+ * Rotate a 2D vector
+ * @param {vec2} origin The origin of the rotation
+ * @param {number} rad The angle of rotation in radians
+ * @returns {vec2} out
+ */
+export function vec2Rotate(left: vec2, right: rvec2, rad: number)
+{
+    //Translate point to the origin
+    const p0 = left.x - right.x,
+      p1 = left.y - right.y,
+      sinC = Math.sin(rad),
+      cosC = Math.cos(rad);
 
-//     //perform rotation and translate to correct position
+    //perform rotation and translate to correct position
+    left.x = p0 * cosC - p1 * sinC + right[0];
+    left.y = p0 * sinC + p1 * cosC + right[1];
+    return left;
+}
 
-//     return this.set(
-//       p0 * cosC - p1 * sinC + b[0],
-//       p0 * sinC + p1 * cosC + b[1]
-//     );
-//   }
+/**
+ * Get the angle between two 2D vectors
+ * @param left the left vector
+ * @param right the right vector
+ * @returns The angle in radians
+ */
+export function vec2Angle(left: rvec2, right: rvec2)
+{
+    const x1 = left.x,
+      y1 = left.y,
+      x2 = right.x,
+      y2 = right.y,
+      // mag is the product of the magnitudes of a and b
+      mag = Math.sqrt((x1 * x1 + y1 * y1) * (x2 * x2 + y2 * y2)),
+      // mag &&.. short circuits if mag == 0
+      cosine = mag && (x1 * x2 + y1 * y2) / mag;
 
-  /**
-   * Get the angle between two 2D vectors
-   * @param {vec2} vector The second operand
-   * @returns {number} The angle in radians
-   */
-//   angle(vector: vec2) {
-//     const a=this.data;
-//     const b=vector.data
-//     let x1 = a[0],
-//       y1 = a[1],
-//       x2 = b[0],
-//       y2 = b[1],
-//       // mag is the product of the magnitudes of a and b
-//       mag = Math.sqrt((x1 * x1 + y1 * y1) * (x2 * x2 + y2 * y2)),
-//       // mag &&.. short circuits if mag == 0
-//       cosine = mag && (x1 * x2 + y1 * y2) / mag;
-//     // Math.min(Math.max(cosine, -1), 1) clamps the cosine between -1 and 1
-//     return Math.acos(Math.min(Math.max(cosine, -1), 1));
-//   }
+    // Math.min(Math.max(cosine, -1), 1) clamps the cosine between -1 and 1
+    return Math.acos(Math.min(Math.max(cosine, -1), 1));
+}
 
 /**
  * Creates a zero vector
