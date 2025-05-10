@@ -396,7 +396,7 @@ export function vec3CrossBy(left: vec3, right: rvec3)
 {
     const x = left.y * right.z - left.z * right.y;
     const y = left.z * right.x - left.x * right.z;
-    const z = left.x * right.y - left.y * right.z;
+    const z = left.x * right.y - left.y * right.x;
 
     left.x = x;
     left.y = y;
@@ -415,7 +415,7 @@ export function vec3Cross(left: rvec3, right: rvec3): vec3
     return {
         x: left.y * right.z - left.z * right.y,
         y: left.z * right.x - left.x * right.z,
-        z: left.x * right.y - left.y * right.z
+        z: left.x * right.y - left.y * right.x
     };
 }
 
@@ -553,11 +553,15 @@ export function vec3Slerp(left: rvec3, right: rvec3, t: number): vec3
  */
 export function vec3TransformMat4(v: vec3, m: rmat4)
 {
-    const w = (m.m03 * v.x + m.m13 * v.y + m.m23 * v.z + m.m33) || 1.0;
+    const vx = v.x,
+        vy = v.y,
+        vz = v.z;
 
-    v.x = (m.m00 * v.x + m.m10 * v.y + m.m20 * v.z + m.m30) / w;
-    v.y = (m.m01 * v.x + m.m11 * v.y + m.m21 * v.z + m.m31) / w;
-    v.z = (m.m02 * v.x + m.m12 * v.y + m.m22 * v.z + m.m32) / w;
+    const w = (m.m03 * vx + m.m13 * vy + m.m23 * vz + m.m33) || 1.0;
+
+    v.x = (m.m00 * vx + m.m10 * vy + m.m20 * vz + m.m30) / w;
+    v.y = (m.m01 * vx + m.m11 * vy + m.m21 * vz + m.m31) / w;
+    v.z = (m.m02 * vx + m.m12 * vy + m.m22 * vz + m.m32) / w;
     return v;
 }
 
@@ -569,9 +573,12 @@ export function vec3TransformMat4(v: vec3, m: rmat4)
  */
 export function vec3TransformMat3(v: vec3, m: rmat3)
 {
-    v.x = v.x * m.m00 + v.y * m.m10 + v.z * m.m20,
-    v.y = v.x * m.m01 + v.y * m.m11 + v.z * m.m21,
-    v.z = v.x * m.m02 + v.y * m.m12 + v.z * m.m22
+    const vx = v.x,
+        vy = v.y,
+        vz = v.z;
+    v.x = vx * m.m00 + vy * m.m10 + vz * m.m20,
+    v.y = vx * m.m01 + vy * m.m11 + vz * m.m21,
+    v.z = vx * m.m02 + vy * m.m12 + vz * m.m22
     return v;
 }
 
