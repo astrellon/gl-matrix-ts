@@ -1,5 +1,6 @@
 import { rmat3 } from "./mat3";
 import { rmat4 } from "./mat4";
+import { rquat } from "./quat";
 
 export interface vec3
 {
@@ -75,20 +76,23 @@ export function vec3SquaredLength(v: rvec3)
 
 /**
  * Adds vector other into vec
+ *
+ * @param v the target vector
  * @param left the left vector
  * @param right the right vector
  * @returns the target vector
  */
-export function vec3AddTo(left: vec3, right: rvec3)
+export function vec3AddTo(v: vec3, left: vec3 | rvec3, right: rvec3)
 {
-    left.x += right.x;
-    left.y += right.y;
-    left.z += right.z;
-    return left;
+    v.x = left.x + right.x;
+    v.y = left.y + right.y;
+    v.z = left.z + right.z;
+    return v;
 }
 
 /**
  * Adds two vectors into a new vector
+ *
  * @param left the left vector
  * @param right the right vector
  * @returns a new vector
@@ -104,16 +108,18 @@ export function vec3Add(left: rvec3, right: rvec3): vec3
 
 /**
  * Subtracts vector other from vector vec
+
+ * @param v the target vector
  * @param left the left vector
  * @param right the right vector
- * @returns the left vector
+ * @returns the target vector
  */
-export function vec3SubFrom(left: vec3, right: rvec3)
+export function vec3SubFrom(v: vec3, left: vec3 | rvec3, right: rvec3)
 {
-    left.x -= right.x;
-    left.y -= right.y;
-    left.z -= right.z;
-    return left;
+    v.x = left.x - right.x;
+    v.y = left.y - right.y;
+    v.z = left.z - right.z;
+    return v;
 }
 
 /**
@@ -133,16 +139,18 @@ export function vec3Sub(left: rvec3, right: rvec3): vec3
 
 /**
  * Multiplies the left vector by the right vector
+ *
+ * @param v the target vector
  * @param left the left vector
  * @param right the right vector
- * @returns the left vector
+ * @returns the target vector
  */
-export function vec3MulTo(left: vec3, right: rvec3)
+export function vec3MulTo(v: vec3, left: vec3 | rvec3, right: rvec3)
 {
-    left.x *= right.x;
-    left.y *= right.y;
-    left.z *= right.z;
-    return left;
+    v.x = left.x * right.x;
+    v.y = left.y * right.y;
+    v.z = left.z * right.z;
+    return v;
 }
 
 /**
@@ -162,16 +170,18 @@ export function vec3Mul(left: rvec3, right: rvec3): vec3
 
 /**
  * Divides the left vector by the right vector
+ *
+ * @param v the target vector
  * @param left the left vector
  * @param right the right vector
- * @returns a new vector
+ * @returns the target vector
  */
-export function vec3DivBy(vec: vec3, other: rvec3)
+export function vec3DivBy(v: vec3, left: vec3 | rvec3, right: rvec3)
 {
-    vec.x /= other.x;
-    vec.y /= other.y;
-    vec.z /= other.z;
-    return vec;
+    v.x = left.x / right.x;
+    v.y = left.y / right.y;
+    v.z = left.z / right.z;
+    return v;
 }
 
 /**
@@ -192,14 +202,15 @@ export function vec3Div(left: rvec3, right: rvec3): vec3
 /**
  * Scales the target vector by a scalar number
  * @param v the target vector
- * @param scale amount to scale the vector by
+ * @param left the left vector
+ * @param right amount to scale the vector by
  * @returns the target vector
  */
-export function vec3ScaleBy(v: vec3, scale: number)
+export function vec3ScaleBy(v: vec3, left: vec3 | rvec3, right: number)
 {
-    v.x *= scale;
-    v.y *= scale;
-    v.z *= scale;
+    v.x = left.x * right;
+    v.y = left.y * right;
+    v.z = left.z * right;
     return v;
 }
 
@@ -236,7 +247,7 @@ export function vec3ScaleAndAddBy(target: vec3, left: rvec3, right: rvec3, scale
  * Calculates the Euclidean distance between two vectors
  * @param left the left operand
  * @param right the right operand
- * @returns distance between left and right
+ * @returns the distance between left and right
  */
 export function vec3Distance(left: rvec3, right: rvec3)
 {
@@ -250,7 +261,7 @@ export function vec3Distance(left: rvec3, right: rvec3)
  * Calculates the squared euclidean distance between two vectors
  * @param left the left operand
  * @param right the right operand
- * @returns squery distance between left and right
+ * @returns the square distance between left and right
  */
 export function vec3SquaredDistance(left: rvec3, right: rvec3)
 {
@@ -290,21 +301,22 @@ export function vec3Negated(v: rvec3): vec3
 /**
  * Inverse of the components of a vector
  *
- * @params v the target vector
+ * @param v the target vector
+ * @param source the source vector
  * @returns the target vector
  */
-export function vec3Inverse(v: vec3)
+export function vec3Inverse(v: vec3, source: vec3 | rvec3)
 {
-    v.x = 1.0 / v.x;
-    v.y = 1.0 / v.y;
-    v.z = 1.0 / v.z;
+    v.x = 1.0 / source.x;
+    v.y = 1.0 / source.y;
+    v.z = 1.0 / source.z;
     return v;
 }
 
 /**
  * Returns the inverse of the components of a vector into a new vector
  *
- * @params v the target vector
+ * @param v the target vector
  * @returns a new vector
  */
 export function vec3Inversed(v: rvec3): vec3
@@ -321,17 +333,17 @@ export function vec3Inversed(v: rvec3): vec3
  * @param v the target vector
  * @returns the target vector
  */
-export function vec3Normalize(v: vec3)
+export function vec3Normalize(v: vec3, source: vec3 | rvec3)
 {
-    let sqrtLen = vec3SquaredLength(v);
+    let sqrtLen = vec3SquaredLength(source);
     if (sqrtLen > 0)
     {
         sqrtLen = 1.0 / Math.sqrt(sqrtLen);
     }
 
-    v.x *= sqrtLen;
-    v.y *= sqrtLen;
-    v.z *= sqrtLen;
+    v.x = source.x * sqrtLen;
+    v.y = source.y * sqrtLen;
+    v.z = source.z * sqrtLen;
     return v;
 }
 
@@ -387,21 +399,23 @@ export function vec3Dot(left: rvec3, right: rvec3)
 }
 
 /**
- * Computes the cross product of two vectors into the left vector
+ * Computes the cross product of two vectors into the target vector
+ *
+ * @param v the  target vector
  * @param left the left vector
  * @param right the right vector
- * @returns the left vector
+ * @returns the target vector
  */
-export function vec3CrossBy(left: vec3, right: rvec3)
+export function vec3CrossBy(v: vec3, left: vec3 | rvec3, right: rvec3)
 {
     const x = left.y * right.z - left.z * right.y;
     const y = left.z * right.x - left.x * right.z;
     const z = left.x * right.y - left.y * right.x;
 
-    left.x = x;
-    left.y = y;
-    left.z = z;
-    return left;
+    v.x = x;
+    v.y = y;
+    v.z = z;
+    return v;
 }
 
 /**
@@ -439,12 +453,13 @@ export function vec3Lerp(left: rvec3, right: rvec3, t: number): vec3
 /**
  * Performs a spherical linear interpolation between two vectors
  *
+ * @param v the target vector
  * @param left the left vector
  * @param right the right vector
  * @param t interpolation amount, in the range [0-1], between the two inputs
- * @returns the left vector
+ * @returns the target vector
  */
-export function vec3SlerpBy(left: vec3, right: rvec3, t: number)
+export function vec3SlerpBy(v: vec3, left: vec3 | rvec3, right: rvec3, t: number)
 {
     const angle = Math.acos(Math.min(Math.max(vec3Dot(left, right), -1), 1));
     const sinTotal = 1.0 / Math.sin(angle);
@@ -456,10 +471,10 @@ export function vec3SlerpBy(left: vec3, right: rvec3, t: number)
     const y = ratioA * left.y + ratioB * right.y;
     const z = ratioA * left.z + ratioB * right.z;
 
-    left.x = x;
-    left.y = y;
-    left.z = z;
-    return left;
+    v.x = x;
+    v.y = y;
+    v.z = z;
+    return v;
 }
 
 /**
@@ -485,171 +500,168 @@ export function vec3Slerp(left: rvec3, right: rvec3, t: number): vec3
     };
 }
 
-    /**
-     * Performs a hermite interpolation with two control points
-     *
-     * @param {vec3} v1 the first operand
-     * @param {vec3} v2 the second operand
-     * @param {vec3} v3 the third operand
-     * @param {vec3} v4 the fourth operand
-     * @param {number} t interpolation amount, in the range [0-1], between the two inputs
-     * @returns {vec3} out
-     */
-    /*
-    static hermite(v1: vec3, v2: vec3, v3: vec3, v4: vec3, t: number) {
-        const { data: a } = v1;
-        const { data: b } = v2;
-        const { data: c } = v3;
-        const { data: d } = v4;
-        let factorTimes2 = t * t;
-        let factor1 = factorTimes2 * (2 * t - 3) + 1;
-        let factor2 = factorTimes2 * (t - 2) + t;
-        let factor3 = factorTimes2 * (t - 1);
-        let factor4 = factorTimes2 * (3 - 2 * t);
-        return new vec3(
-            a[0] * factor1 + b[0] * factor2 + c[0] * factor3 + d[0] * factor4,
-            a[1] * factor1 + b[1] * factor2 + c[1] * factor3 + d[1] * factor4,
-            a[2] * factor1 + b[2] * factor2 + c[2] * factor3 + d[2] * factor4
-        );
-    }
-        */
+/**
+ * Performs a hermite interpolation with two control points
+ *
+ * @param v the target vector
+ * @param v1 the first operand
+ * @param v2 the second operand
+ * @param v3 the third operand
+ * @param v4 the fourth operand
+ * @param t interpolation amount, in the range [0-1], between the two inputs
+ * @returns the target vector
+ */
+export function vec3Hermite(v: vec3, v1: rvec3, v2: rvec3, v3: rvec3, v4: rvec3, t: number)
+{
+    const factorTimes2 = t * t;
+    const factor1 = factorTimes2 * (2 * t - 3) + 1;
+    const factor2 = factorTimes2 * (t - 2) + t;
+    const factor3 = factorTimes2 * (t - 1);
+    const factor4 = factorTimes2 * (3 - 2 * t);
 
-    /**
-     * Performs a bezier interpolation with two control points
-     *
-     * @param {vec3} v1 the first operand
-     * @param {vec3} v2 the second operand
-     * @param {vec3} v3 the third operand
-     * @param {vec3} v4 the fourth operand
-     * @param {number} t interpolation amount, in the range [0-1], between the two inputs
-     * @returns {vec3} out
-     */
-    /*
-    static bezier(v1: vec3, v2: vec3, v3: vec3, v4: vec3, t: number) {
-        const { data: a } = v1;
-        const { data: b } = v2;
-        const { data: c } = v3;
-        const { data: d } = v4;
-        let inverseFactor = 1 - t;
-        let inverseFactorTimesTwo = inverseFactor * inverseFactor;
-        let factorTimes2 = t * t;
-        let factor1 = inverseFactorTimesTwo * inverseFactor;
-        let factor2 = 3 * t * inverseFactorTimesTwo;
-        let factor3 = 3 * factorTimes2 * inverseFactor;
-        let factor4 = factorTimes2 * t;
-        return new vec3(
-            a[0] * factor1 + b[0] * factor2 + c[0] * factor3 + d[0] * factor4,
-            a[1] * factor1 + b[1] * factor2 + c[1] * factor3 + d[1] * factor4,
-            a[2] * factor1 + b[2] * factor2 + c[2] * factor3 + d[2] * factor4
-        );
-    }
-        */
+    v.x = v1.x * factor1 + v2.x * factor2 + v3.x * factor3 + v4.x * factor4;
+    v.y = v1.y * factor1 + v2.y * factor2 + v3.y * factor3 + v4.y * factor4;
+    v.z = v1.z * factor1 + v2.z * factor2 + v3.z * factor3 + v4.z * factor4;
+    return v;
+}
+
+/**
+ * Performs a bezier interpolation with two control points
+ *
+ * @param v the target vector
+ * @param v1 the first operand
+ * @param v2 the second operand
+ * @param v3 the third operand
+ * @param v4 the fourth operand
+ * @param t interpolation amount, in the range [0-1], between the two inputs
+ * @returns the target vector
+ */
+export function vec3Bezier(v: vec3, v1: rvec3, v2: rvec3, v3: rvec3, v4: rvec3, t: number)
+{
+    const inverseFactor = 1 - t;
+    const inverseFactorTimesTwo = inverseFactor * inverseFactor;
+    const factorTimes2 = t * t;
+    const factor1 = inverseFactorTimesTwo * inverseFactor;
+    const factor2 = 3 * t * inverseFactorTimesTwo;
+    const factor3 = 3 * factorTimes2 * inverseFactor;
+    const factor4 = factorTimes2 * t;
+
+    v.x = v1.x * factor1 + v2.x * factor2 + v3.x * factor3 + v4.x * factor4;
+    v.y = v1.y * factor1 + v2.y * factor2 + v3.y * factor3 + v4.y * factor4;
+    v.z = v1.z * factor1 + v2.z * factor2 + v3.z * factor3 + v4.z * factor4;
+    return v;
+}
 
 /**
  * Transforms the vec3 with a mat4.
  * 4th vector component is implicitly '1'
- * @param {mat4} matrix matrix to transform with
- * @returns {vec3} out
+ *
+ * @param out the target vector
+ * @param m the matrix to transform with
+ * @returns the target matrix
  */
-export function vec3TransformMat4(v: vec3, m: rmat4)
+export function vec3TransformMat4(out: vec3, v: vec3 | rvec3, m: rmat4)
 {
     const vx = v.x,
         vy = v.y,
         vz = v.z;
 
-    const w = (m.m03 * vx + m.m13 * vy + m.m23 * vz + m.m33) || 1.0;
+    let w = m.m03 * vx + m.m13 * vy + m.m23 * vz + m.m33;
+    if (w != 0)
+    {
+        w = 1.0 / w;
+    }
+    else
+    {
+        w = 1.0;
+    }
 
-    v.x = (m.m00 * vx + m.m10 * vy + m.m20 * vz + m.m30) / w;
-    v.y = (m.m01 * vx + m.m11 * vy + m.m21 * vz + m.m31) / w;
-    v.z = (m.m02 * vx + m.m12 * vy + m.m22 * vz + m.m32) / w;
-    return v;
+    out.x = (m.m00 * vx + m.m10 * vy + m.m20 * vz + m.m30) / w;
+    out.y = (m.m01 * vx + m.m11 * vy + m.m21 * vz + m.m31) / w;
+    out.z = (m.m02 * vx + m.m12 * vy + m.m22 * vz + m.m32) / w;
+    return out;
 }
 
 /**
  * Transforms the vec3 with a mat3.
  *
- * @param {mat3} matrix the 3x3 matrix to transform with
- * @returns {vec3} out
+ * @param v the target vector
+ * @param m the 3x3 matrix to transform with
+ * @returns the target vector
  */
-export function vec3TransformMat3(v: vec3, m: rmat3)
+export function vec3TransformMat3(out: vec3, v: vec3 | rvec3, m: rmat3)
 {
     const vx = v.x,
         vy = v.y,
         vz = v.z;
-    v.x = vx * m.m00 + vy * m.m10 + vz * m.m20,
-    v.y = vx * m.m01 + vy * m.m11 + vz * m.m21,
-    v.z = vx * m.m02 + vy * m.m12 + vz * m.m22
-    return v;
+
+    out.x = vx * m.m00 + vy * m.m10 + vz * m.m20,
+    out.y = vx * m.m01 + vy * m.m11 + vz * m.m21,
+    out.z = vx * m.m02 + vy * m.m12 + vz * m.m22
+    return out;
 }
 
-    /**
-     * Transforms the vec3 with a quat
-     * Can also be used for dual quaternions. (Multiply it with the real part)
-     * @param {ReadonlyQuat} rotation quaternion to transform with
-     * @returns {vec3} out
-     */
-    /*
-    transformQuat(rotation: quat) {
-        const a = this.data;
-        const q = rotation.data;
-        // benchmarks: https://jsperf.com/quaternion-transform-vec3-implementations-fixed
-        let qx = q[0],
-            qy = q[1],
-            qz = q[2],
-            qw = q[3];
-        let x = a[0],
-            y = a[1],
-            z = a[2];
-        // var qvec = [qx, qy, qz];
-        // var uv = vec3.cross([], qvec, a);
-        let uvx = qy * z - qz * y,
-            uvy = qz * x - qx * z,
-            uvz = qx * y - qy * x;
-        // var uuv = vec3.cross([], qvec, uv);
-        let uuvx = qy * uvz - qz * uvy,
-            uuvy = qz * uvx - qx * uvz,
-            uuvz = qx * uvy - qy * uvx;
-        // vec3.scale(uv, uv, 2 * w);
-        let w2 = qw * 2;
-        uvx *= w2;
-        uvy *= w2;
-        uvz *= w2;
-        // vec3.scale(uuv, uuv, 2);
-        uuvx *= 2;
-        uuvy *= 2;
-        uuvz *= 2;
-        // return vec3.add(out, a, vec3.add(out, uv, uuv));
-        return this.set(x + uvx + uuvx, y + uvy + uuvy, z + uvz + uuvz);
-    }
-        */
+/**
+ * Transforms the vec3 with a quat
+ * Can also be used for dual quaternions. (Multiply it with the real part)
+ *
+ * @param out the target vector
+ * @param v the vector transform
+ * @param q quaternion to transform with
+ * @returns the target vector
+ */
+export function vec3TransformQuat(out: vec3, v: vec3 | rvec3, q: rquat)
+{
+    // benchmarks: https://jsperf.com/quaternion-transform-vec3-implementations-fixed
+    const x = v.x,
+        y = v.y,
+        z = v.z;
 
-    /**
-     * Rotate a 3D vector around the x-axis
-     * @param {vec3} origin The origin of the rotation
-     * @param {number} rad The angle of rotation in radians
-     * @returns {vec3} out
-     */
-    /*
-    rotateX(origin: vec3, rad: number) {
-        const { data } = this;
-        const b = origin.data;
-        let p = [],
-            r = [];
-        //Translate point to the origin
-        p[0] = data[0] - b[0];
-        p[1] = data[1] - b[1];
-        p[2] = data[2] - b[2];
+    const w2 = q.w * 2;
+    const uvx = (q.y * z - q.z * y) * w2,
+        uvy = (q.z * x - q.x * z) * w2,
+        uvz = (q.x * y - q.y * x) * w2;
 
-        //perform rotation
-        r[0] = p[0];
-        r[1] = p[1] * Math.cos(rad) - p[2] * Math.sin(rad);
-        r[2] = p[1] * Math.sin(rad) + p[2] * Math.cos(rad);
+    const uuvx = (q.y * uvz - q.z * uvy) * 2,
+        uuvy = (q.z * uvx - q.x * uvz) * 2,
+        uuvz = (q.x * uvy - q.y * uvx) * 2;
 
-        //translate to correct position
+    // return vec3.add(out, a, vec3.add(out, uv, uuv));
+    out.x = x + uvx + uuvx;
+    out.y = y + uvy + uuvy;
+    out.z = z + uvz + uuvz;
+    return out;
+}
 
-        return this.set(r[0] + b[0], r[1] + b[1], r[2] + b[2]);
-    }
-        */
+/**
+ * Rotate a 3D vector around the x-axis
+ * @param {vec3} origin The origin of the rotation
+ * @param {number} rad The angle of rotation in radians
+ * @returns {vec3} out
+ */
+/*
+export function vec3RotateX(out: vec3, v: vec3 | rvec3, origin: rvec3, rad: number)
+{
+    //Translate point to the origin
+    const px = v.x - origin.x,
+        py = v.y - origin.y,
+        pz = v.z - origin.z;
+
+    const srad = Math.sin(rad),
+        crad = Math.cos(rad);
+
+    //perform rotation
+    //rx = px;
+    const ry = py * crad - pz * srad,
+        rz = py * srad + pz * crad;
+
+    //translate to correct position
+    out.x = px + origin.x;
+    out.y = ry + origin.y;
+    out.z = rz + origin.z;
+    return out;
+}
+    */
 
     /**
      * Rotate a 3D vector around the y-axis
@@ -661,7 +673,7 @@ export function vec3TransformMat3(v: vec3, m: rmat3)
     rotateY(origin: vec3, rad: number) {
         const data = this.data;
         const b = origin.data;
-        let p = [],
+        let p = ,
             r = [];
         //Translate point to the origin
         p[0] = data[0] - b[0];

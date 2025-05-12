@@ -13,8 +13,8 @@ export type rmat2 = Readonly<mat2>;
 /**
  * Creates a new mat2 initialized with values from an existing matrix
  *
- * @param {ReadonlyMat2} a matrix to clone
- * @returns {mat2} a new 2x2 matrix
+ * @param m matrix to clone
+ * @returns a new matrix
  */
 export function mat2Clone(m: rmat2): mat2
 {
@@ -27,8 +27,9 @@ export function mat2Clone(m: rmat2): mat2
 /**
  * Copy the values from one mat2 to another
  *
- * @param {ReadonlyMat2} matrix the source matrix
- * @returns {mat2} data
+ * @param left the left matrix
+ * @param right the right matrix
+ * @returns the left matrix
  */
 export function mat2Copy(left: mat2, right: rmat2): mat2
 {
@@ -40,12 +41,11 @@ export function mat2Copy(left: mat2, right: rmat2): mat2
     return left;
 }
 
-  /**
-   * Set a mat2 to the identity matrix
-   *
-   * @param {mat2} data the receiving matrix
-   * @returns {mat2} data
-   */
+/**
+ * Creates an identity matrix
+ *
+ * @returns a new identity matrix
+ */
 export function mat2Identity(): mat2
 {
     return {
@@ -57,11 +57,12 @@ export function mat2Identity(): mat2
 /**
  * Set the components of a mat2 to the given values
  *
- * @param {number} m00 Component in column 0, row 0 position (index 0)
- * @param {number} m01 Component in column 0, row 1 position (index 1)
- * @param {number} m10 Component in column 1, row 0 position (index 2)
- * @param {number} m11 Component in column 1, row 1 position (index 3)
- * @returns {mat2} data
+ * @param m the target matrix
+ * @param m00 Component in column 0, row 0 position (index 0)
+ * @param m01 Component in column 0, row 1 position (index 1)
+ * @param m10 Component in column 1, row 0 position (index 2)
+ * @param m11 Component in column 1, row 1 position (index 3)
+ * @returns the target matrix
  */
 export function mat2Set(
     m: mat2,
@@ -80,8 +81,8 @@ export function mat2Set(
 
 /**
  * Transpose the values of a mat2
- * @param {ReadonlyMat2} m the source matrix
- * @returns {mat2} data
+ * @param m the target matrix
+ * @returns the target matrix
  */
 export function mat2Transpose(m: mat2)
 {
@@ -95,7 +96,8 @@ export function mat2Transpose(m: mat2)
 /**
  * Inverts a mat2
  *
- * @returns {mat2} data
+ * @param m the target matrix
+ * @returns the target matrix
  */
 export function mat2Invert(m: mat2)
 {
@@ -124,7 +126,8 @@ export function mat2Invert(m: mat2)
 /**
  * Calculates the adjugate of a mat2
  *
- * @returns {mat2} data
+ * @param m the target matrix
+ * @returns the target matrix
  */
 export function mat2Adjoint(m: mat2)
 {
@@ -142,7 +145,8 @@ export function mat2Adjoint(m: mat2)
 /**
  * Calculates the determinant of a mat2
  *
- * @returns {number} determinant of a
+ * @param m the target matrix
+ * @returns determinant of a
  */
 export function mat2Determinant(m: rmat2)
 {
@@ -151,8 +155,10 @@ export function mat2Determinant(m: rmat2)
 
 /**
  * Multiplies two mat2's
- * @param {ReadonlyMat2} right the second operand
- * @returns {mat2} data
+ *
+ * @param left the left matrix
+ * @param right the right matrix
+ * @returns the left matrix
  */
 export function mat2Mul(left: mat2, right: rmat2)
 {
@@ -172,8 +178,9 @@ export function mat2Mul(left: mat2, right: rmat2)
 /**
  * Rotates a mat2 by the given angle
  *
- * @param {number} rad the angle to rotate the matrix by
- * @returns {mat2} data
+ * @param m the target matrix
+ * @param rad the angle to rotate the matrix by
+ * @returns the matrix matrix
  */
 export function mat2Rotate(m: mat2, rad:number)
 {
@@ -195,8 +202,10 @@ export function mat2Rotate(m: mat2, rad:number)
 
 /**
  * Scales the mat2 by the dimensions in the given vec2
- * @param {vec2} v the vec2 to scale the matrix by
- * @returns {mat2} data
+ *
+ * @param m the target matrix
+ * @param v the vec2 to scale the matrix by
+ * @returns the target matrix
  */
 export function mat2Scale(m: mat2, v: rvec2)
 {
@@ -220,8 +229,9 @@ export function mat2Scale(m: mat2, v: rvec2)
  *     mat2.identity(dest);
  *     mat2.rotate(dest, dest, rad);
  *
- * @param {number} rad the angle to rotate the matrix by
- * @returns {mat2} data
+ * @param m the target matrix
+ * @param rad the angle to rotate the matrix by
+ * @returns the target matrix
  */
 export function mat2SetFromRotation(m: mat2, rad:number)
 {
@@ -242,8 +252,10 @@ export function mat2SetFromRotation(m: mat2, rad:number)
  *
  *     mat2.identity(dest);
  *     mat2.scale(dest, dest, vec);
- * @param {vec2} v Scaling vector
- * @returns {mat2} data
+ *
+ * @param m the target matrix
+ * @param v Scaling vector
+ * @returns the target matrix
  */
 export function mat2SetFromScaling(m: mat2, v: rvec2)
 {
@@ -258,19 +270,25 @@ export function mat2SetFromScaling(m: mat2, v: rvec2)
 /**
  * Returns Frobenius norm of a mat2
  *
- * @returns {number} Frobenius norm
+ * @param m the target matrix
+ * @returns the Frobenius norm
  */
 export function mat2Frob(m: rmat2)
 {
-    return Math.hypot(m.m00, m.m01, m.m10, m.m11);
+    return Math.sqrt(m.m00 ** 2 +
+        m.m01 ** 2 +
+        m.m10 ** 2 +
+        m.m11 ** 2);
 }
 
 /**
  * Returns L, D and U matrices (Lower triangular, Diagonal and Upper triangular) by factorizing the input matrix
- * @param {ReadonlyMat2} l the lower triangular matrix
- * @param {ReadonlyMat2} d the diagonal matrix
- * @param {ReadonlyMat2} u the upper triangular matrix
- * @param {ReadonlyMat2} a the input matrix to factorize
+ *
+ * @param l the lower triangular matrix
+ * @param d the diagonal matrix
+ * @param u the upper triangular matrix
+ * @param a the input matrix to factorize
+ * @returns a list containing [L, D, U]
  */
 export function mat2LDU(l: mat2, d: mat2, u: mat2, a: rmat2)
 {
@@ -283,9 +301,10 @@ export function mat2LDU(l: mat2, d: mat2, u: mat2, a: rmat2)
 
 /**
  * Adds two mat2's
- * @param {mat2} data the receiving matrix
- * @param {ReadonlyMat2} matrix the second operand
- * @returns {mat2} data
+ *
+ * @param left the left matrix
+ * @param right the right matrix
+ * @returns the left matrix
  */
 export function mat2Add(left: mat2, right: rmat2)
 {
@@ -298,9 +317,10 @@ export function mat2Add(left: mat2, right: rmat2)
 }
 
 /**
- * Subtracts matrix b from matrix a
- * @param {ReadonlyMat2} matrix the second operand
- * @returns {mat2} data
+ * Subtracts matrix left -= right
+ * @param left the left matrix
+ * @param right the right matrix
+ * @returns the left matrix
  */
 export function mat2Sub(left: mat2, right: rmat2)
 {
@@ -315,8 +335,9 @@ export function mat2Sub(left: mat2, right: rmat2)
 /**
  * Multiply each element of the matrix by a scalar.
  *
- * @param {number} s amount to scale the matrix's elements by
- * @returns {mat2} data
+ * @param m the target matrix
+ * @param s amount to scale the matrix's elements by
+ * @returns the target matrix
  */
 export function mat2MulScalar(m: mat2, s:number)
 {

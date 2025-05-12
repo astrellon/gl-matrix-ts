@@ -586,13 +586,15 @@ export function quatRotationTo(q: quat, a: rvec3, right: rvec3)
     const dot = vec3Dot(a, right);
     if (dot < -0.999999)
     {
-        let tmpVec3 = vec3CrossBy({x: 1, y: 0, z: 0}, a);
+        const xUnit = {x: 1, y: 0, z: 0};
+        let tmpVec3 = vec3CrossBy(xUnit, xUnit, a);
         if (vec3SquaredLength(tmpVec3) < mathf.EPSILON)
         {
-            tmpVec3 = vec3CrossBy({x: 0, y: 1, z : 0}, a);
+            const yUnit = {x: 0, y: 1, z : 0};
+            tmpVec3 = vec3CrossBy(yUnit, yUnit, a);
         }
 
-        vec3Normalize(tmpVec3);
+        vec3Normalize(tmpVec3, tmpVec3);
 
         quatSetAxisAngle(q, tmpVec3, Math.PI);
         return q;
@@ -612,7 +614,7 @@ export function quatRotationTo(q: quat, a: rvec3, right: rvec3)
         q.y = tmpVec3.y;
         q.z = tmpVec3.z;
         q.w = 1 + dot;
-        return vec3Normalize(q);
+        return quatNormalize(q);
     }
 }
 
