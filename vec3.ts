@@ -750,6 +750,14 @@ export function vec3Zero(): vec3
     return {x: 0, y: 0, z: 0}
 }
 
+/**
+ * Creates a zero vector
+ */
+export function vec3One(): vec3
+{
+    return {x: 1, y: 1, z: 1}
+}
+
 export function vec3Abs(v: rvec3): vec3
 {
     return {
