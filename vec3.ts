@@ -614,6 +614,9 @@ export function vec3TransformQuat(out: vec3, v: vec3 | rvec3, q: rquat)
 {
     if (q.x === 0 && q.y === 0 && q.z === 0 && q.w === 1)
     {
+        out.x = v.x;
+        out.y = v.y;
+        out.z = v.z;
         return out;
     }
 
