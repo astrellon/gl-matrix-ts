@@ -612,19 +612,28 @@ export function vec3TransformMat3(out: vec3, v: vec3 | rvec3, m: rmat3)
  */
 export function vec3TransformQuat(out: vec3, v: vec3 | rvec3, q: rquat)
 {
+    if (q.x === 0 && q.y === 0 && q.z === 0 && q.w === 1)
+    {
+        return out;
+    }
+
     // benchmarks: https://jsperf.com/quaternion-transform-vec3-implementations-fixed
     const x = v.x,
         y = v.y,
         z = v.z;
 
     const w2 = q.w * 2;
-    const uvx = (q.y * z - q.z * y) * w2,
-        uvy = (q.z * x - q.x * z) * w2,
-        uvz = (q.x * y - q.y * x) * w2;
+    let uvx = q.y * z - q.z * y,
+        uvy = q.z * x - q.x * z,
+        uvz = q.x * y - q.y * x;
 
     const uuvx = (q.y * uvz - q.z * uvy) * 2,
         uuvy = (q.z * uvx - q.x * uvz) * 2,
         uuvz = (q.x * uvy - q.y * uvx) * 2;
+
+    uvx *= w2;
+    uvy *= w2;
+    uvz *= w2;
 
     // return vec3.add(out, a, vec3.add(out, uv, uuv));
     out.x = x + uvx + uuvx;
