@@ -347,6 +347,20 @@ export function vec3Normalize(v: vec3, source: vec3 | rvec3)
     return v;
 }
 
+export function vec3NormalizeValues(v: vec3, x: number, y: number, z: number)
+{
+    let sqrtLen = x ** 2 + y ** 2 + z ** 2;
+    if (sqrtLen > 0)
+    {
+        sqrtLen = 1.0 / Math.sqrt(sqrtLen);
+    }
+
+    v.x = x * sqrtLen;
+    v.y = y * sqrtLen;
+    v.z = z * sqrtLen;
+    return v;
+}
+
 /**
  * Normalize the given vector v into a new vector
  * @param v the target vector
