@@ -485,3 +485,11 @@ export function vec4One(): vec4
 {
     return {x: 1, y: 1, z: 1, w: 1}
 }
+
+export function vec4ApproxEquals(left: rvec4, right: rvec4, delta: number = 0.0001)
+{
+    // Checked if doing a Math.abs check on the diff of each element was faster or not
+    // https://jsperf.app/nukupa
+    // Looked like using the distance was faster in general.
+    return vec4Distance(left, right) < delta;
+}
