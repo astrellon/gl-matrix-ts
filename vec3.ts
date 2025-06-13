@@ -810,3 +810,11 @@ export function vec3Min(v: rvec3, s: number): vec3
         z: Math.min(v.z, s),
     }
 }
+
+export function vec3ApproxEquals(left: rvec3, right: rvec3, delta: number = 0.0001)
+{
+    // Checked if doing a Math.abs check on the diff of each element was faster or not
+    // https://jsperf.app/nukupa
+    // Looked like using the distance was faster in general.
+    return vec3Distance(left, right) < delta;
+}
